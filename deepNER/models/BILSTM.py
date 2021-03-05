@@ -10,6 +10,7 @@
 '''
 
 import torch 
+import torch.nn.functional as F
 
 
 class BiLSTM(object):
@@ -29,11 +30,22 @@ class BiLSTM(object):
 
     def test(self, x, lengths):
         logits = self.forward(x, lengths)
-        # 输出每行的最大值及最大值索引
+        # 输出每行的最大值 和 最大值索引
         _, batch_tagids = torch.max(logits, dim=2)
         return batch_tagids
 
 
 def cal_loss(logits, targets, tag2id):
-    
+    PAD = tag2id.get('<pad>')
+    assert PAD is not None
+    mask = (targets != PAD)
+    targets = targets[mask]
+    out_size = logits.size(2)
+    logits = logits.mask_select(
+        mask.unsqueeze(2).expand(-1, -1, out_size)
+    ).contiguous().view(-1, out_size)
+
+    assert logits.size(0) == targets.size(0)
+    loss = F.cross_entropy(logits, targets)
+    return loss 
 

@@ -16,6 +16,7 @@ import os
 
 from models.HMM import HMM
 from models.CRF import CRFModel
+from models.BILSTM import BiLSTM
 from src.utils import save_model
 from src.evaluating import Metrics
 
