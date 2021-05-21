@@ -1,4 +1,5 @@
 */data/
 *pyc
 *pkl
-
+alg/
+*/.ipynb_checkpoints
