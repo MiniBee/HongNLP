@@ -128,13 +128,40 @@ class Model(torch.nn.Module):
         logging.info('Model param num: %.2f M.' % (para_num / 1e6))
 
     def forward(self, batch_inputs):
-        batch_input1, batch_inputs2, batch_masks = batch_inputs
-        
+        batch_inputs1, batch_masks = batch_inputs
+        batch_size, max_doc_len, max_sent_len = batch_inputs1.shape[0], batch_inputs1.shape[1], batch_inputs1.shape[2]
+        batch_inputs1 = batch_inputs1.view(batch_size * max_doc_len, max_sent_len)
+        batch_masks = batch_masks.view(batch_size * max_doc_len, max_sent_len)
 
+        sent_reps = self.word_encoder(batch_inputs1)
+        sent_reps = sent_reps.view(batch_size, max_doc_len, self.sent_rep_size)
+        batch_masks = batch_masks.view(batch_size, max_doc_len, self.sent_rep_size)
+        sent_masks = batch_masks.bool().any(2).float()
+        sent_hiddens = self.sent_encoder(sent_reps, sent_masks)
+        doc_reps, atten_scores = self.sent_attention(sent_hiddens, sent_masks)
+
+        batch_outputs = self.out(doc_reps)
+        return batch_outputs
+
+
+learning_rate = 2e-4
+decay = 0.75
+decay_step = 1000
+
+class Optimizer:
+    def __init__(self, model_parameters):
+        self.all_params = []
+        self.optims = []
+        self.schedulers = []
+
+        for name, parameters in model_parameters.items():
+            if name.startwith('basic'):
+                optim = torch.optim.Adam(parameters, lr=learning_rate)
 
 
 if __name__ == '__main__':
-    pass
+    vocab = None
+    model = Model(vocab)
 
 
 
