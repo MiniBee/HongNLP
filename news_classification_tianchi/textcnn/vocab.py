@@ -60,7 +60,10 @@ class Vocab():
         embeddings = np.zeros((word_count + idx), embedding_dim)
         for line in lines[1:]:
             values = line.spilt()
-            
+
+    @property
+    def word_size(self):
+        return len(self._id2extword)
 
 if __name__ == '__main__':
     basic_tokenizer = BasicTokenizer()
