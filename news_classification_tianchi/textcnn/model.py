@@ -157,6 +157,31 @@ class Optimizer:
         for name, parameters in model_parameters.items():
             if name.startwith('basic'):
                 optim = torch.optim.Adam(parameters, lr=learning_rate)
+                self.optims.append(optim)
+
+                l = lambda step: decay ** (step // decay_step)
+                scheduler = torch.optim.lr_scheduler.LambdaLR(optim, lr_lambda=l)
+                self.schedulers.append(scheduler)
+                self.all_params.extend(parameters)
+            else:
+                Exception('no named parameters...')
+        self.num = len(self.optims)
+
+    def step(self):
+        for optim, scheduler in zip(self.optims, self.schedulers):
+            optim.step()
+            scheduler.step()
+            optim.zero_grad()
+
+    def zero_grad(self):
+        for optim in self.optims:
+            optim.zero_grad()
+    
+    def get_lr(self):
+        lrs = tuple(map(lambda x: x.get_lr()[-1], self.schedulers))
+        lr = ' %.5' * self.num
+        res = lr % lrs 
+        return res 
 
 
 if __name__ == '__main__':
