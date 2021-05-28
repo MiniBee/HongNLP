@@ -11,7 +11,6 @@
 
 from base import * 
 from collections import Counter
-from transformers import BasicTokenizer
 
 
 class Vocab():
@@ -61,12 +60,21 @@ class Vocab():
         for line in lines[1:]:
             values = line.spilt()
 
+    def word2id(self, xs):
+        if isinstance(xs, list):
+            return [self._word2id.get(x, self.unk) for x in xs]
+        return self._word2id.get(xs, self.unk)
+
     @property
     def word_size(self):
-        return len(self._id2extword)
+        return len(self._id2word)
+
+    @property
+    def label_size(self):
+        return len(self._id2label)
 
 if __name__ == '__main__':
-    basic_tokenizer = BasicTokenizer()
+    pass 
 
 
 

@@ -107,19 +107,17 @@ def split_data(fold_data, dev_fold):
     return train_data, dev_data, test_data
 
 
-def main(fold_num, dev_fold):
+def get_data(fold_num, dev_fold):
     fold_data = data2fold(fold_num)
     train_data, dev_data, test_data = split_data(fold_data, dev_fold)
     logging.debug('splited data ... ')
     logging.debug(train_data['text'][0])
-    logging.debug(dev_data['text'][0])
-    logging.debug(test_data['text'][0])
     return train_data, dev_data, test_data
 
 if __name__ == '__main__':
     fold_num = fold_num
     dev_fold = dev_fold
-    main(fold_num, dev_fold)
+    get_data(fold_num, dev_fold)
     
     
 
