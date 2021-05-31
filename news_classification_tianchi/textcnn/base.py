@@ -16,6 +16,9 @@ import numpy as np
 import torch
 import logging
 
+import sys 
+sys.path.append('./')
+
 logging.basicConfig(
                     level=logging.DEBUG,
                     format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
@@ -38,8 +41,8 @@ else:
     device = torch.device('cpu')
 
 
-data_file = '../data/train_sample.csv'        # data_prepare 
-test_data_file = '../data/test_sample.csv'    # data_prepare
+data_file = '/Users/peihongyue/phy/project/HongNLP/news_classification_tianchi/data/train_sample.csv'        # data_prepare 
+test_data_file = '/Users/peihongyue/phy/project/HongNLP/news_classification_tianchi/data/test_sample.csv'    # data_prepare
 fold_num = 10                                 # data_prepare
 dev_fold = 9                                  # data_prepare
 
